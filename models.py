@@ -48,4 +48,7 @@ class Email(models.Model):
         return recipient_emails
 
     def __str__(self):
-        return '[{subject}]'.format(subject=self.recipient_list())
+        return '[{subject}] {recipients}'.format(
+            subject=self.subject,
+            recipients=self.recipient_list()
+        )
