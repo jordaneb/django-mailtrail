@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core import mail
-from backends import console
+from backends import console, database
 from models import Email, Recipient
 from mock import patch
 
@@ -66,6 +66,7 @@ class BackendTestCase(TestCase):
         self.assertEquals(email.subject, 'Test subject')
         self.assertEquals(email.html_message, '<p>html</p>')
         self.assertEquals(email.from_email, 'test@testuser.com')
+        self.assertEquals(Recipient.objects.all().count(), 1)
 
     @patch('django.core.mail.backends.locmem.EmailBackend', console.EmailBackend)
     def test_send_email_duplicate_recipients(self):
@@ -81,3 +82,14 @@ class BackendTestCase(TestCase):
         self.assertEqual(Recipient.objects.filter(email='test@testuser.com').count(), 1)
         self.assertEqual(Recipient.objects.filter(email='test2@testuser.com').count(), 1)
 
+    @patch('django.core.mail.backends.locmem.EmailBackend', database.EmailBackend)
+    def test_send_email_database(self):
+        mail.send_mail('Test subject', 'Test message', 'test@testuser.com', ('test@testuser.com',),
+                       html_message='<p>html</p>')
+
+        self.assertEquals(Email.objects.all().count(), 1)
+
+        email = Email.objects.all().first()
+        self.assertEqual(email.recipients.all().count(), 1)
+
+        self.assertEqual(Recipient.objects.filter(email='test@testuser.com').count(), 1)
