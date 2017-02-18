@@ -10,11 +10,19 @@ class MailTrailBase:
         """
         Recipient = get_recipient_model()
 
+        # Uses email library to parse messages
+        payload = message.message().get_payload()
+
+        # Determine whether message has a HTML version or not
+        plaintext = payload[0].get_payload() if not isinstance(payload[0], str) else payload
+        html = payload[1].get_payload() if not isinstance(payload[1], str) else payload
+
         email = Email.objects.create(
             subject=message.subject,
-            message=message.message(),
-            from_email=message.from_email,
-            html_message=getattr(message, 'html_message', self.BLANK)
+            payload=message.message(),
+            plaintext_message=plaintext,
+            html_message=html,
+            from_email=message.from_email
         )
 
         for recipient_email in message.recipients():

@@ -30,10 +30,11 @@ class Email(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subject = models.CharField(max_length=255, blank=True)
-    message = models.TextField(blank=True)
+    payload = models.TextField(blank=True)
+    plaintext_message = models.TextField(blank=True)
+    html_message = models.TextField(blank=True, null=True)
     from_email = models.EmailField()
     recipients = models.ManyToManyField(RECIPIENT_MODEL, related_name='emails')
-    html_message = models.TextField(blank=True, null=True)
 
     # When the email was first sent
     created = models.DateTimeField(default=timezone.now)
