@@ -3,6 +3,7 @@ from mailtrail.models import Email, get_recipient_model
 
 class MailTrailBase:
     BLANK = ''
+    BACKEND = None
 
     def save_message(self, message):
         """
@@ -22,7 +23,8 @@ class MailTrailBase:
             payload=message.message(),
             plaintext_message=plaintext,
             html_message=html,
-            from_email=message.from_email
+            from_email=message.from_email,
+            backend=self.BACKEND
         )
 
         for recipient_email in message.recipients():

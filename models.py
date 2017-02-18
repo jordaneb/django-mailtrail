@@ -36,6 +36,9 @@ class Email(models.Model):
     from_email = models.EmailField()
     recipients = models.ManyToManyField(RECIPIENT_MODEL, related_name='emails')
 
+    # An identifier to track what backend was used
+    backend = models.CharField(max_length=32, null=True, blank=True)
+
     # When the email was first sent
     created = models.DateTimeField(default=timezone.now)
 

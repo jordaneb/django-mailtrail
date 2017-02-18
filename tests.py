@@ -1,8 +1,10 @@
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.core import mail
-from backends import console, database
+from backends import console, database, filebased
 from models import Email, Recipient
 from mock import patch
+import os, shutil
 
 
 class ModelTestCase(TestCase):
@@ -55,6 +57,8 @@ class ModelTestCase(TestCase):
 
 
 class BackendTestCase(TestCase):
+    FILE_TEST_PATH = '/tmp/mailtrail-tests'
+
     @patch('django.core.mail.backends.locmem.EmailBackend', console.EmailBackend)
     def test_send_email_console(self):
         mail.send_mail('Test subject', 'Test message', 'test@testuser.com', ('test@testuser.com',), html_message='<p>html</p>')
@@ -93,3 +97,24 @@ class BackendTestCase(TestCase):
         self.assertEqual(email.recipients.all().count(), 1)
 
         self.assertEqual(Recipient.objects.filter(email='test@testuser.com').count(), 1)
+
+    @patch('django.core.mail.backends.locmem.EmailBackend', filebased.EmailBackend)
+    @override_settings(EMAIL_FILE_PATH=FILE_TEST_PATH)
+    def test_send_email_database(self):
+        mail.send_mail('Test subject', 'Test message', 'test@testuser.com', ('test@testuser.com',),
+                       html_message='<p>html</p>')
+
+        self.assertEquals(Email.objects.all().count(), 1)
+
+        email = Email.objects.all().first()
+        self.assertEqual(email.recipients.all().count(), 1)
+        self.assertEqual(Recipient.objects.filter(email='test@testuser.com').count(), 1)
+
+        num_files = len([f for f in os.listdir(self.FILE_TEST_PATH)])
+        self.assertEqual(num_files, 1)
+
+    def tearDown(self):
+        if os.path.exists(self.FILE_TEST_PATH):
+            shutil.rmtree(self.FILE_TEST_PATH)
+
+        super(BackendTestCase, self).tearDown()

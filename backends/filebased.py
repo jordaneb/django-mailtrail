@@ -1,9 +1,10 @@
 from mailtrail.backends.base import MailTrailBase
-from django.core.mail.backends.console import EmailBackend as ConsoleEmailBackend
+from django.conf import settings
+from django.core.mail.backends.filebased import EmailBackend as FileBasedEmailBackend
 
 
-class EmailBackend(MailTrailBase, ConsoleEmailBackend):
-    BACKEND = 'EMAIL'
+class EmailBackend(MailTrailBase, FileBasedEmailBackend):
+    BACKEND = 'FILEBASED'
 
     def send_messages(self, email_messages):
         for message in email_messages:

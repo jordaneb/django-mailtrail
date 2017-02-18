@@ -7,6 +7,8 @@ class EmailBackend(MailTrailBase):
     maybe for creating internal messaging systems - that's up to you
     to figure out though!
     """
+    BACKEND = 'DATABASE'
+
     def __init__(self, *args, **kwargs):
         pass
 
