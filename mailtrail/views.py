@@ -41,3 +41,15 @@ class EmailResendView(View):
                        email.recipients.all(), html_message=email.html_message)
 
         return TemplateResponse(request, template='email/resend.html', context=context)
+
+
+class EmailRawView(View):
+    def get(self, request, pk):
+        email = get_object_or_404(Email, pk=pk)
+
+        context = {
+            'email': email,
+            'bytes': len(email.payload)
+        }
+
+        return TemplateResponse(request, template='email/raw.html', context=context)

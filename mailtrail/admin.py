@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.conf import settings
 from django.conf.urls import url
 from mailtrail.models import Email, get_recipient_model, get_recipient_model_attribute
 from mailtrail import views
@@ -10,8 +11,8 @@ class EmailAdmin(admin.ModelAdmin):
 
     list_display = ['subject', 'recipient_list', 'created']
     list_filter = ['recipients__{}'.format(get_recipient_model_attribute()), 'created', 'backend']
-    exclude = []
-    readonly_fields = ['payload', 'plaintext_message', 'html_message', 'created', 'from_email', 'subject', 'backend']
+    exclude = ['payload']
+    readonly_fields = ['plaintext_message', 'html_message', 'created', 'from_email', 'subject', 'backend', 'recipients']
 
     def change_view(self, request, object_id, **kwargs):
         kwargs['extra_context'] = {
@@ -22,6 +23,18 @@ class EmailAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super(EmailAdmin, self).get_urls()
         my_urls = [
-            url(r'^(?P<pk>[0-9a-f-]+)/resend/$', views.EmailResendView.as_view(), name="mailtrail_email_resend")
+            url(r'^(?P<pk>[0-9a-f-]+)/resend/$', views.EmailResendView.as_view(), name="mailtrail_email_resend"),
+            url(r'^(?P<pk>[0-9a-f-]+)/raw/$', views.EmailRawView.as_view(), name="mailtrail_email_raw")
         ]
         return my_urls + urls
+
+
+class RecipientAdmin(admin.ModelAdmin):
+    exclude = []
+    readonly_fields = [get_recipient_model_attribute()]
+
+
+def get_recipient_model_admin():
+    return getattr(settings, 'MAILTRAIL_RECIPIENT_MODEL_ADMIN', RecipientAdmin)
+
+admin.site.register(get_recipient_model(), get_recipient_model_admin())

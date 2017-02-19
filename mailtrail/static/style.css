@@ -2,6 +2,10 @@
     display: flex;
 }
 
+.mt .add-spacing {
+    margin: 10px 0;
+}
+
 .mt .button {
     background: #79aec8;
     padding: 10px 15px;

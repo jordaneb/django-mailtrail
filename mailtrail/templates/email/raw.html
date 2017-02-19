@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Raw Email
+{% endblock %}
+
+{% block content_title %}
+    <h1>Raw Email</h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">Home</a> › <a href="{% url 'admin:index' %}mailtrail">Mailtrail</a> › <a href="{% url 'admin:mailtrail_email_changelist' %}">Emails</a> › <a href="{% url 'admin:mailtrail_email_change' email.pk %}">{{ email }}</a> › Raw Email
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="mt">
+        <a href="{% url 'admin:mailtrail_email_change' email.pk %}" class="button">Back</a>
+    </div>
+    <br>
+    <h3>Total Size: {{ bytes }} bytes.</h3>
+    <hr>
+    <code>
+        {{ email.payload|linebreaksbr }}
+    </code>
+{% endblock %}
