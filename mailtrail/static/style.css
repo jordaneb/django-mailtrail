@@ -1,0 +1,22 @@
+.buttons-inline {
+    display: flex;
+}
+
+.mt .button {
+    background: #79aec8;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    margin: 2px 5px 2px 0;
+}
+
+.mt .button.button-grey {
+    background: #999;
+}
+
+.mt .button:hover {
+    background: #609ab6;
+}

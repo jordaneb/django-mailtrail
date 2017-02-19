@@ -42,8 +42,11 @@ class Email(models.Model):
     # When the email was first sent
     created = models.DateTimeField(default=timezone.now)
 
+    def total_recipients(self):
+        return self.recipients.all().count()
+
     def recipient_list(self):
-        total_recipients = self.recipients.all().count()
+        total_recipients = self.total_recipients()
         recipient_emails = ', '.join(recipient.email for recipient in self.recipients.all()[:3])
 
         if total_recipients > 3:
@@ -56,3 +59,6 @@ class Email(models.Model):
             subject=self.subject,
             recipients=self.recipient_list()
         )
+
+    class Meta:
+        ordering = ['subject', 'created']

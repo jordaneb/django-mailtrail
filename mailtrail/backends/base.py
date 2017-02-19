@@ -14,9 +14,15 @@ class MailTrailBase:
         # Uses email library to parse messages
         payload = message.message().get_payload()
 
-        # Determine whether message has a HTML version or not
-        plaintext = payload[0].get_payload() if not isinstance(payload[0], str) else payload
-        html = payload[1].get_payload() if not isinstance(payload[1], str) else payload
+        if not payload:
+            # Payload is entirely blank
+            plaintext = payload
+            html = payload
+        else:
+            # Determine whether message has a HTML version or not
+            plaintext = payload[0].get_payload() if not isinstance(payload[0], str) else payload
+            html = payload[1].get_payload() if not isinstance(payload[1], str) else payload
+
 
         email = Email.objects.create(
             subject=message.subject,

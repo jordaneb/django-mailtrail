@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Resend Email
+{% endblock %}
+
+{% block content_title %}
+    <h1>Resend Email</h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">Home</a> › <a href="{% url 'admin:index' %}mailtrail">Mailtrail</a> › <a href="{% url 'admin:mailtrail_email_changelist' %}">Emails</a> › <a href="{% url 'admin:mailtrail_email_change' email.pk %}">{{ email }}</a> › Resend
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if recipients.total != 0 %}
+        <p>The email will be sent to {{ recipients.total }} recipient{% if recipients.total != 1 %}s{% endif %}:</p>
+        <ul>
+            {% for recipient in recipients.list %}
+                <li>{{ recipient }}</li>
+            {% endfor %}
+        </ul>
+
+        <div class="buttons-inline mt">
+            <a class="button" href="{% url 'admin:mailtrail_email_change' email.pk %}">Back</a>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input class="button" type="submit" value="Resend Email" />
+            </form>
+        </div>
+    {% else %}
+        <p>This email has no recipients - the email cannot be sent.</p>
+    {% endif %}
+{% endblock %}
