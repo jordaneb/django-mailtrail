@@ -18,15 +18,27 @@ class Recipient(models.Model):
         return self.email
 
 
-def get_recipient_model():
-    return getattr(settings, 'MAILTRAIL_RECIPIENT_MODEL', Recipient)
+def get_recipient_model(as_instance=True):
+    if not hasattr(settings, 'MAILTRAIL_RECIPIENT_MODEL'):
+        return Recipient
+    else:
+        model = getattr(settings, 'MAILTRAIL_RECIPIENT_MODEL')
+        if as_instance:
+            return apps.get_model(model)
+        else:
+            return model
+
+
+def get_recipient_model_attribute():
+    return getattr(settings, 'MAILTRAIL_RECIPIENT_MODEL_ATTRIBUTE', 'email')
+
 
 
 class Email(models.Model):
     """
     Email model for catching and storing all sent emails via `django.core.mail`.
     """
-    RECIPIENT_MODEL = get_recipient_model()
+    RECIPIENT_MODEL = get_recipient_model(as_instance=False)
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subject = models.CharField(max_length=255, blank=True)
@@ -47,7 +59,7 @@ class Email(models.Model):
 
     def recipient_list(self):
         total_recipients = self.total_recipients()
-        recipient_emails = ', '.join(recipient.email for recipient in self.recipients.all()[:3])
+        recipient_emails = ', '.join(getattr(recipient, get_recipient_model_attribute()) for recipient in self.recipients.all()[:3])
 
         if total_recipients > 3:
             recipient_emails += ' and {} more...'.format(total_recipients - 3)
@@ -62,3 +74,21 @@ class Email(models.Model):
 
     class Meta:
         ordering = ['subject', 'created']
+
+
+
+# # # # # # # # # # # # #
+#   ** TEST MODELS **   #
+# # # # # # # # # # # # #
+
+class DummyRecipient(models.Model):
+    """
+    Dummy recipient model for testing custom recipient model. Please
+    don't reference this in production.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email_address = models.EmailField()
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return '{} - {}'.format(self.email_address, self.name)

@@ -2,7 +2,7 @@ from django.views import View
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
 from django.core import mail
-from mailtrail.models import Email
+from mailtrail.models import Email, get_recipient_model_attribute
 
 
 class EmailResendView(View):
@@ -13,7 +13,7 @@ class EmailResendView(View):
         context = {
             'email': email,
             'recipients': {
-                'list': [recipient.email for recipient in recipients],
+                'list': [getattr(recipient, get_recipient_model_attribute()) for recipient in recipients],
                 'total': recipients.count()
             }
         }
@@ -29,7 +29,7 @@ class EmailResendView(View):
         context = {
             'email': email,
             'recipients': {
-                'list': [recipient.email for recipient in recipients],
+                'list': [getattr(recipient, get_recipient_model_attribute()) for recipient in recipients],
                 'total': total_recipients
             },
             'messages': [
