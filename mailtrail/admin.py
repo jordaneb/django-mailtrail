@@ -41,4 +41,5 @@ def get_recipient_model_admin():
     else:
         return RecipientAdmin
 
+
 admin.site.register(get_recipient_model(), get_recipient_model_admin())

@@ -3,11 +3,9 @@ from django.test.utils import override_settings
 from django.core import mail
 from django.apps import apps
 from django.conf import settings
-from backends import console, database, filebased
-from models import Email, Recipient
-from mock import patch
-from django.urls import reverse
-import os, shutil
+from mailtrail.models import Email, Recipient
+import os
+import shutil
 
 
 class ModelTestCase(TestCase):
@@ -90,7 +88,7 @@ class ModelTestCase(TestCase):
 class BackendTestCase(TestCase):
     FILE_TEST_PATH = '/tmp/mailtrail-tests'
 
-    @patch('django.core.mail.backends.locmem.EmailBackend', console.EmailBackend)
+    @override_settings(EMAIL_BACKEND='mailtrail.backends.console.EmailBackend')
     def test_send_email_console(self):
         mail.send_mail('Test subject', 'Test message', 'test@testuser.com', ('test@testuser.com',), html_message='<p>html</p>')
 
@@ -103,7 +101,7 @@ class BackendTestCase(TestCase):
         self.assertEquals(email.from_email, 'test@testuser.com')
         self.assertEquals(Recipient.objects.all().count(), 1)
 
-    @patch('django.core.mail.backends.locmem.EmailBackend', console.EmailBackend)
+    @override_settings(EMAIL_BACKEND='mailtrail.backends.console.EmailBackend')
     def test_send_email_duplicate_recipients(self):
         mail.send_mail('Test subject', 'Test message', 'test@testuser.com',
                        ('test@testuser.com', 'test@testuser.com', 'test2@testuser.com'),
@@ -117,7 +115,7 @@ class BackendTestCase(TestCase):
         self.assertEqual(Recipient.objects.filter(email='test@testuser.com').count(), 1)
         self.assertEqual(Recipient.objects.filter(email='test2@testuser.com').count(), 1)
 
-    @patch('django.core.mail.backends.locmem.EmailBackend', database.EmailBackend)
+    @override_settings(EMAIL_BACKEND='mailtrail.backends.database.EmailBackend')
     def test_send_email_database(self):
         mail.send_mail('Test subject', 'Test message', 'test@testuser.com', ('test@testuser.com',),
                        html_message='<p>html</p>')
@@ -129,9 +127,8 @@ class BackendTestCase(TestCase):
 
         self.assertEqual(Recipient.objects.filter(email='test@testuser.com').count(), 1)
 
-    @patch('django.core.mail.backends.locmem.EmailBackend', filebased.EmailBackend)
-    @override_settings(EMAIL_FILE_PATH=FILE_TEST_PATH)
-    def test_send_email_database(self):
+    @override_settings(EMAIL_FILE_PATH=FILE_TEST_PATH, EMAIL_BACKEND='mailtrail.backends.filebased.EmailBackend')
+    def test_send_email_filebased(self):
         mail.send_mail('Test subject', 'Test message', 'test@testuser.com', ('test@testuser.com',),
                        html_message='<p>html</p>')
 
@@ -144,22 +141,7 @@ class BackendTestCase(TestCase):
         num_files = len([f for f in os.listdir(self.FILE_TEST_PATH)])
         self.assertEqual(num_files, 1)
 
-    @patch('django.core.mail.backends.locmem.EmailBackend', database.EmailBackend)
-    def test_resend_email(self):
-        mail.send_mail('Test subject', 'Test message', 'test@testuser.com',
-                       ('test@testuser.com', 'test@testuser.com', 'test2@testuser.com'),
-                       html_message='<p>html</p>')
-
-        self.assertEqual(Email.objects.all().count(), 1)
-
-        email = Email.objects.all().first()
-        url = reverse('admin:mailtrail_email_resend', kwargs={'pk': email.pk})
-        response = self.client.post(url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(Email.objects.all().count(), 2)
-
-    @patch('django.core.mail.backends.locmem.EmailBackend', database.EmailBackend)
+    @override_settings(EMAIL_BACKEND='mailtrail.backends.database.EmailBackend')
     def test_send_empty_email(self):
         mail.send_mail('Test subject', '', 'test@testuser.com',
                        ('test@testuser.com', 'test@testuser.com', 'test2@testuser.com'),

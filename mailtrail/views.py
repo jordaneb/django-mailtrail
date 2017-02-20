@@ -82,8 +82,4 @@ class EmailForwardView(View):
         forwarded_email.is_forwarded = True
         forwarded_email.save()
 
-        context = {
-            'email': email
-        }
-
         return HttpResponseRedirect(urlresolvers.reverse('admin:mailtrail_email_change', args=(forwarded_email.pk,)))

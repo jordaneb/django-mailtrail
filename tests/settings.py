@@ -21,9 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
 
-    # External Packages
-    "rest_framework",
-    "rest_framework_docs",
+    'mailtrail',
 
     # Test apps
     "tests"
