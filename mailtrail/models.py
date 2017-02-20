@@ -8,8 +8,7 @@ import uuid
 class Recipient(models.Model):
     """
     This recipient model can be extended if you would like to link emails to
-    user models. However, the `email` field must always be present and all
-    other fields should be nullable.
+    user models.
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
@@ -19,6 +18,9 @@ class Recipient(models.Model):
 
 
 def get_recipient_model(as_instance=True):
+    """
+    Get the recipient model defined for fallback to `mailtrail.models.Recipient`
+    """
     if not hasattr(settings, 'MAILTRAIL_RECIPIENT_MODEL'):
         return Recipient
     else:
@@ -30,7 +32,12 @@ def get_recipient_model(as_instance=True):
 
 
 def get_recipient_model_attribute():
+    """
+    Get the model attribute where email addresses are stored or use default `email`
+    e.g. MyRecipientModel.email_address
+    """
     return getattr(settings, 'MAILTRAIL_RECIPIENT_MODEL_ATTRIBUTE', 'email')
+
 
 
 class Email(models.Model):
@@ -47,6 +54,7 @@ class Email(models.Model):
     from_email = models.EmailField()
     recipients = models.ManyToManyField(RECIPIENT_MODEL, related_name='emails')
 
+    # Is the email a forwarded version of another?
     is_forwarded = models.BooleanField(default=False)
 
     # An identifier to track what backend was used

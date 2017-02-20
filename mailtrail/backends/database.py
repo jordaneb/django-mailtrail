@@ -3,9 +3,8 @@ from mailtrail.backends.base import MailTrailBase
 
 class EmailBackend(MailTrailBase):
     """
-    The database backend is very useful for debugging templates and
-    maybe for creating internal messaging systems - that's up to you
-    to figure out though!
+    Store email in the database and don't send anything. Useful
+    for debugging.
     """
     BACKEND = 'DATABASE'
 

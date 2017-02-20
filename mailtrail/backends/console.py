@@ -3,6 +3,11 @@ from django.core.mail.backends.console import EmailBackend as ConsoleEmailBacken
 
 
 class EmailBackend(MailTrailBase, ConsoleEmailBackend):
+    """
+    Send email and print it to the console.
+
+    REPLACES: django.core.mail.backends.console.EmailBackend
+    """
     BACKEND = 'CONSOLE'
 
     def send_messages(self, email_messages):

@@ -16,7 +16,7 @@
 
 {% block content %}
     {% if recipients.total != 0 %}
-        <p>The email will be sent to {{ recipients.total }} recipient{% if recipients.total != 1 %}s{% endif %}:</p>
+        <p>The email will be sent to {{ email.recipients.all.count }} recipient{% if recipients.total != 1 %}s{% endif %}:</p>
         <ul>
             {% for recipient in recipients.list %}
                 <li>{{ recipient }}</li>

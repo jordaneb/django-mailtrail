@@ -2,14 +2,17 @@ from mailtrail.models import Email, get_recipient_model, get_recipient_model_att
 
 
 class MailTrailBase:
-    BLANK = ''
+    # Used to help identify which backend was used to send emails
     BACKEND = None
+
+    BLANK = ''
 
     def _get_content(self, msg, content_type, fallback=None):
         payload = fallback
 
         for part in msg.walk():
             if part.get_content_type() == content_type:
+                # Message has this content_type, return it
                 payload = part.get_payload()
 
         return payload
@@ -40,5 +43,7 @@ class MailTrailBase:
             data = {
                 get_recipient_model_attribute(): recipient_email
             }
+
+            # Key 0 is the recipient object, key 1 is irrelevant
             recipient = Recipient.objects.get_or_create(**data)[0]
             email.recipients.add(recipient)
