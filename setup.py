@@ -17,6 +17,9 @@ setup(
     url='https://github.com/gitcommitpush/django-mailtrail',
     author='Jordan E Brown',
     author_email='jordan@hexwebs.com',
+    install_requires=[
+      'Django',
+    ],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
