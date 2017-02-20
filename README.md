@@ -53,7 +53,10 @@ Finally, run migrations with `python manage.py migrate` to prepare your database
 All emails sent with `django.core.mail` will now be stored in your database and are accessible
 in the Django Admin!
 
-For example, an email send with `django.core.mail.send_mail()` will look a little like this:
+
+## Screenshots
+
+Sending an email send with `django.core.mail.send_mail()` will look a little like this:
 
 **Viewing an email**
 ![screen shot 2017-02-20 at 13 20 28](https://cloud.githubusercontent.com/assets/20087139/23126647/b251fec6-f76f-11e6-8d13-0b36f6451ede.png)
