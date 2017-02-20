@@ -19,4 +19,4 @@ install:
   - pip install -U Django==$DJANGO_VERSION
 
 script:
-  - python manage.py test
+  - python runtests.py
