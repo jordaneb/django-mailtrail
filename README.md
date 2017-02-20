@@ -4,6 +4,10 @@ A seamless integration that makes Django email awesome.
 ## Installation
 MailTrail is designed to work seamlessly with existing and new projects - all you have to do use the MailTrail backends.
 
+```
+pip install django-mailtrail
+```
+
 Make sure that you add `mailtrail` to your `INSTALLED_APPS` like so:
 ```python
 INSTALLED_APPS = [
