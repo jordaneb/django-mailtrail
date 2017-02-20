@@ -33,13 +33,6 @@ A custom backend that saves emails in the database but doesn't send them; useful
 EMAIL_BACKEND = 'mailtrail.backends.database.EmailBackend'
 ```
 
-##### Console
-
-The equivalent of Django's built-in console backend.
-```python
-EMAIL_BACKEND = 'mailtrail.backends.console.EmailBackend'
-```
-
 ##### File Based
 
 The equivalent of Django's built-in filebased backend.
