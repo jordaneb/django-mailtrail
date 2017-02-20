@@ -1,5 +1,4 @@
 from mailtrail.backends.base import MailTrailBase
-from django.conf import settings
 from django.core.mail.backends.filebased import EmailBackend as FileBasedEmailBackend
 
 

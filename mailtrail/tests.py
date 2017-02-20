@@ -7,7 +7,8 @@ from backends import console, database, filebased
 from models import Email, Recipient
 from mock import patch
 from django.urls import reverse
-import os, shutil
+import os
+import shutil
 
 
 class ModelTestCase(TestCase):
@@ -131,7 +132,7 @@ class BackendTestCase(TestCase):
 
     @patch('django.core.mail.backends.locmem.EmailBackend', filebased.EmailBackend)
     @override_settings(EMAIL_FILE_PATH=FILE_TEST_PATH)
-    def test_send_email_database(self):
+    def test_send_email_filebased(self):
         mail.send_mail('Test subject', 'Test message', 'test@testuser.com', ('test@testuser.com',),
                        html_message='<p>html</p>')
 

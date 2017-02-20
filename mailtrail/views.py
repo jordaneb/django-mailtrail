@@ -83,7 +83,7 @@ class EmailForwardView(SendEmailMixin, View):
 
         data = request.POST
 
-        recipients = data['recipients_new'].replace(' ', '').split(',') # Convert comma separated to list
+        recipients = data['recipients_new'].replace(' ', '').split(',')  # Convert comma separated to list
         if 'include_recipients' in data.keys():
             # Get all existing recipient emails as list
             [recipients.append(recipient.email) for recipient in email.recipients.all()]

@@ -39,7 +39,6 @@ def get_recipient_model_attribute():
     return getattr(settings, 'MAILTRAIL_RECIPIENT_MODEL_ATTRIBUTE', 'email')
 
 
-
 class Email(models.Model):
     """
     Email model for catching and storing all sent emails via `django.core.mail`.
