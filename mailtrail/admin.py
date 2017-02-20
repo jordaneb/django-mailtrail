@@ -12,7 +12,7 @@ class EmailAdmin(admin.ModelAdmin):
     list_display = ['subject', 'recipient_list', 'created']
     list_filter = ['recipients__{}'.format(get_recipient_model_attribute()), 'created', 'backend']
     exclude = ['payload']
-    readonly_fields = ['plaintext_message', 'html_message', 'created', 'from_email', 'subject', 'backend', 'recipients']
+    readonly_fields = ['plaintext_message', 'html_message', 'created', 'from_email', 'subject', 'backend', 'recipients', 'is_forwarded']
 
     def change_view(self, request, object_id, **kwargs):
         kwargs['extra_context'] = {
@@ -24,7 +24,8 @@ class EmailAdmin(admin.ModelAdmin):
         urls = super(EmailAdmin, self).get_urls()
         my_urls = [
             url(r'^(?P<pk>[0-9a-f-]+)/resend/$', views.EmailResendView.as_view(), name="mailtrail_email_resend"),
-            url(r'^(?P<pk>[0-9a-f-]+)/raw/$', views.EmailRawView.as_view(), name="mailtrail_email_raw")
+            url(r'^(?P<pk>[0-9a-f-]+)/raw/$', views.EmailRawView.as_view(), name="mailtrail_email_raw"),
+            url(r'^(?P<pk>[0-9a-f-]+)/forward/$', views.EmailForwardView.as_view(), name="mailtrail_email_forward")
         ]
         return my_urls + urls
 
@@ -35,6 +36,9 @@ class RecipientAdmin(admin.ModelAdmin):
 
 
 def get_recipient_model_admin():
-    return getattr(settings, 'MAILTRAIL_RECIPIENT_MODEL_ADMIN', RecipientAdmin)
+    if hasattr(settings, 'MAILTRAIL_RECIPIENT_MODEL_ADMIN'):
+        return getattr(settings, 'MAILTRAIL_RECIPIENT_MODEL_ADMIN')
+    else:
+        return RecipientAdmin
 
 admin.site.register(get_recipient_model(), get_recipient_model_admin())

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Forward Email
+{% endblock %}
+
+{% block content_title %}
+    <h1>Forward Email</h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">Home</a> › <a href="{% url 'admin:index' %}mailtrail">Mailtrail</a> › <a href="{% url 'admin:mailtrail_email_changelist' %}">Emails</a> › <a href="{% url 'admin:mailtrail_email_change' email.pk %}">{{ email }}</a> › Forward
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    {% for rec in recipients %}
+        <p>{{ rec }}</p>
+    {% endfor %}
+
+    <form action="" method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <input id="include_recipients" name="include_recipients" type="checkbox">
+            <label for="include_recipients">Send to current recipient{% if email.total_recipients != 1 %}s{% endif %}: {{ email.recipient_list }}</label>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="recipients_new">Enter new recipients (seperated by commas)</label> <br>
+            <textarea name="recipients_new" id="recipients_new" cols="50" rows="5"></textarea>
+        </div>
+        <br>
+        <div class="buttons-inline mt">
+            <a class="button button-grey" href="{% url 'admin:mailtrail_email_change' email.pk %}">Back</a>
+            <input class="button" type="submit" value="Forward Email" />
+        </div>
+    </form>
+{% endblock %}

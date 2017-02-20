@@ -48,6 +48,8 @@ class Email(models.Model):
     from_email = models.EmailField()
     recipients = models.ManyToManyField(RECIPIENT_MODEL, related_name='emails')
 
+    is_forwarded = models.BooleanField(default=False)
+
     # An identifier to track what backend was used
     backend = models.CharField(max_length=32, null=True, blank=True)
 
