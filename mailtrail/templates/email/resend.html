@@ -24,7 +24,7 @@
         </ul>
 
         <div class="buttons-inline mt">
-            <a class="button" href="{% url 'admin:mailtrail_email_change' email.pk %}">Back</a>
+            <a class="button button-grey" href="{% url 'admin:mailtrail_email_change' email.pk %}">Back</a>
             <form action="" method="POST">
                 {% csrf_token %}
                 <input class="button" type="submit" value="Resend Email" />

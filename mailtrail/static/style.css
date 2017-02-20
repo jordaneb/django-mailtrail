@@ -21,6 +21,10 @@
     background: #999;
 }
 
+.mt .button.button-grey:hover {
+    background: #777;
+}
+
 .mt .button:hover {
     background: #609ab6;
 }
