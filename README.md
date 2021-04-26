@@ -1,4 +1,7 @@
 # Django MailTrail [![Build Status](https://travis-ci.org/gitcommitpush/django-mailtrail.svg?branch=master)](https://travis-ci.org/gitcommitpush/django-mailtrail)
+## Not maintained
+This project isn't maintained and hasn't been for a long time.
+
 A seamless integration that makes Django email awesome.
 
 ## Installation
